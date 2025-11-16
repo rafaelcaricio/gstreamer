@@ -26,7 +26,7 @@ LiveSource (30fps) → Queue → HLSSegmenter → S3Sink
 
 ### 1. Buffer Flow via Chain Calls
 
-**Code**: `core/pad.py:push()` → `core/pad.py:_chain()`
+**Code**: `src/gst_mini/core/pad.py:push()` → `src/gst_mini/core/pad.py:_chain()`
 
 - Buffers flow synchronously through chain function calls
 - Each element's chain function processes and forwards buffers
@@ -36,7 +36,7 @@ LiveSource (30fps) → Queue → HLSSegmenter → S3Sink
 
 ### 2. Timestamps and Time Domains
 
-**Code**: `core/buffer.py:GstBuffer`
+**Code**: `src/gst_mini/core/buffer.py:GstBuffer`
 
 Every buffer carries:
 - `pts`: Presentation timestamp (when to display)
@@ -47,7 +47,7 @@ Every buffer carries:
 
 ### 3. Segment Conversion
 
-**Code**: `core/segment.py:to_running_time()`
+**Code**: `src/gst_mini/core/segment.py:to_running_time()`
 
 Converts stream time to running time:
 ```python
@@ -58,7 +58,7 @@ running_time = (pts - segment.start) / segment.rate + segment.base
 
 ### 4. Queue Thread Decoupling
 
-**Code**: `elements/queue.py`
+**Code**: `src/gst_mini/elements/queue.py`
 
 **Critical for live pipelines!**
 
@@ -72,7 +72,7 @@ This prevents live sources from blocking on sync waits.
 
 ### 5. Synchronization at Sink
 
-**Code**: `elements/s3sink.py:_chain()`
+**Code**: `src/gst_mini/elements/s3sink.py:_chain()`
 
 The synchronization formula:
 ```python
@@ -89,22 +89,39 @@ clock.wait_until(clock_time)  # BLOCKS here!
 
 ```
 gst_mini/
-├── core/
-│   ├── buffer.py       # GstBuffer with timestamps
-│   ├── segment.py      # Time domain conversion
-│   ├── pad.py          # Chain call mechanism
-│   ├── element.py      # Base element class
-│   ├── pipeline.py     # Pipeline container
-│   └── clock.py        # Timing and synchronization
-├── elements/
-│   ├── livesource.py   # Generates frames at 30fps
-│   ├── queue.py        # Thread decoupling
-│   ├── hlssegmenter.py # Groups frames into segments
-│   └── s3sink.py       # Uploads with synchronization
-└── examples/
-    ├── full_pipeline.py    # Complete HLS pipeline
-    ├── without_queue.py    # Shows blocking problem
-    └── simple_sync.py      # Basic synchronization
+├── src/
+│   └── gst_mini/          # Main package
+│       ├── core/
+│       │   ├── buffer.py       # GstBuffer with timestamps
+│       │   ├── segment.py      # Time domain conversion
+│       │   ├── pad.py          # Chain call mechanism
+│       │   ├── element.py      # Base element class
+│       │   ├── pipeline.py     # Pipeline container
+│       │   └── clock.py        # Timing and synchronization
+│       ├── elements/
+│       │   ├── livesource.py   # Generates frames at 30fps
+│       │   ├── queue.py        # Thread decoupling
+│       │   ├── hlssegmenter.py # Groups frames into segments
+│       │   └── s3sink.py       # Uploads with synchronization
+│       └── py.typed       # Type checking marker
+├── examples/
+│   ├── full_pipeline.py    # Complete HLS pipeline
+│   ├── without_queue.py    # Shows blocking problem
+│   └── simple_sync.py      # Basic synchronization
+├── pyproject.toml         # Package configuration
+└── README.md
+```
+
+## Installation
+
+The project uses `uv` for package management. Install the package in development mode:
+
+```bash
+# Create virtual environment (first time only)
+uv venv
+
+# Install package in editable mode
+uv pip install -e .
 ```
 
 ## Running Examples
@@ -112,8 +129,7 @@ gst_mini/
 ### Full Pipeline (Recommended Start)
 
 ```bash
-cd gst_mini
-python3 examples/full_pipeline.py
+uv run examples/full_pipeline.py
 ```
 
 **What to observe**:
@@ -126,7 +142,7 @@ python3 examples/full_pipeline.py
 ### Without Queue (Demonstrates Problem)
 
 ```bash
-python3 examples/without_queue.py
+uv run examples/without_queue.py
 ```
 
 **What to observe**:
@@ -137,7 +153,7 @@ python3 examples/without_queue.py
 ### Simple Synchronization
 
 ```bash
-python3 examples/simple_sync.py
+uv run examples/simple_sync.py
 ```
 
 **What to observe**:
@@ -149,32 +165,32 @@ python3 examples/simple_sync.py
 
 ### Phase 1: Understanding Data Flow
 
-1. Read `core/buffer.py` - See how timestamps are stored
-2. Read `core/pad.py` - Understand chain calls
-3. Run `simple_sync.py` - See synchronization in action
+1. Read `src/gst_mini/core/buffer.py` - See how timestamps are stored
+2. Read `src/gst_mini/core/pad.py` - Understand chain calls
+3. Run `uv run examples/simple_sync.py` - See synchronization in action
 
 **Key Insight**: Chain calls are synchronous and blocking.
 
 ### Phase 2: Understanding Timing
 
-1. Read `core/segment.py` - Time domain conversion
-2. Read `core/clock.py` - Clock wait mechanism
-3. Read `elements/s3sink.py:_chain()` - See synchronization formula
+1. Read `src/gst_mini/core/segment.py` - Time domain conversion
+2. Read `src/gst_mini/core/clock.py` - Clock wait mechanism
+3. Read `src/gst_mini/elements/s3sink.py:_chain()` - See synchronization formula
 
 **Key Insight**: Sync happens at sinks, not during chain calls.
 
 ### Phase 3: Understanding Threading
 
-1. Read `elements/livesource.py` - Live frame generation
-2. Run `without_queue.py` - See the blocking problem
-3. Read `elements/queue.py` - Thread decoupling solution
-4. Run `full_pipeline.py` - See smooth operation
+1. Read `src/gst_mini/elements/livesource.py` - Live frame generation
+2. Run `uv run examples/without_queue.py` - See the blocking problem
+3. Read `src/gst_mini/elements/queue.py` - Thread decoupling solution
+4. Run `uv run examples/full_pipeline.py` - See smooth operation
 
 **Key Insight**: Queues separate fast producers from slow consumers.
 
 ### Phase 4: Understanding Buffering
 
-1. Read `elements/hlssegmenter.py` - Accumulation strategy
+1. Read `src/gst_mini/elements/hlssegmenter.py` - Accumulation strategy
 2. Modify `target_duration` in examples
 3. Modify `max_size` and `leaky` mode in queue
 

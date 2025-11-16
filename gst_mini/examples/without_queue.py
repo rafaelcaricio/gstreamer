@@ -16,12 +16,6 @@ Pipeline:
 Compare this to the full_pipeline.py example with a queue.
 """
 
-import sys
-import os
-
-# Add parent directory to path to import gst_mini package
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../..'))
-
 from gst_mini import GstPipeline, GstState, LiveSource, HLSSegmenter, S3Sink
 
 
