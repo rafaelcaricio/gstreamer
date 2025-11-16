@@ -37,6 +37,15 @@ class GstElement(ABC):
         self.segment = GstSegment()
         self.pipeline: Optional['GstElement'] = None  # Will be set by pipeline
 
+    def log(self, message: str):
+        """
+        Log a message with element context.
+
+        Args:
+            message: Message to log
+        """
+        print(f"[{self.pipeline.clock.get_time():.3f}s] {self.name}: {message}")
+
     def create_src_pad(self, name: str = "src") -> GstPad:
         """
         Create a source pad.

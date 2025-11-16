@@ -9,7 +9,6 @@ class BufferFlags(Flag):
     NONE = 0
     DISCONT = auto()  # Discontinuity in the stream
     EOS = auto()      # End of stream marker
-    SEGMENT = auto()  # Segment marker (for HLS segments)
     DELTA_UNIT = auto()  # Indicates the buffer is not decodable by itself
 
 

@@ -101,7 +101,6 @@ class HLSSegmenter(GstElement):
             pts=segment_pts,
             duration=segment_duration,
             data=segment_data,
-            flags=BufferFlags.SEGMENT
         )
 
         print(f"[{self.pipeline.clock.get_time():.3f}s] {self.name}: Segment {self.segment_number} complete "
