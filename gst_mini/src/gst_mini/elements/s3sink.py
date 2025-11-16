@@ -52,7 +52,6 @@ class S3Sink(GstElement):
 
         # Extract timestamp
         pts = buffer.pts
-        duration = buffer.duration
 
         # Convert stream time to running time (gst_segment_to_running_time)
         # Corresponds to gstbasesink.c:2207
