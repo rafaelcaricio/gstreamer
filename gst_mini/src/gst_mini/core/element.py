@@ -35,7 +35,7 @@ class GstElement(ABC):
         self.src_pad: Optional[GstPad] = None
         self.sink_pad: Optional[GstPad] = None
         self.segment = GstSegment()
-        self.pipeline = None  # Will be set by pipeline
+        self.pipeline: Optional['GstElement'] = None  # Will be set by pipeline
 
     def create_src_pad(self, name: str = "src") -> GstPad:
         """

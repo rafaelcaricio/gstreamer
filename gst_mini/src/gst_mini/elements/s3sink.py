@@ -106,7 +106,7 @@ class S3Sink(GstElement):
             num_frames = len(segment_data['buffers'])
             duration = segment_data['duration']
 
-            print(f"[{self.pipeline.clock.get_time():.3f}s] {self.name}: Uploading segment_{segment_num}.m3u8 "
+            print(f"[{self.pipeline.clock.get_time():.3f}s] {self.name}: Uploading segment_{segment_num}.cmfv "
                   f"({num_frames} frames, {duration:.1f}s) to s3://{self.bucket}/")
 
             # Simulate upload delay

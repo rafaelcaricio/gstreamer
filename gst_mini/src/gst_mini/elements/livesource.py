@@ -88,7 +88,7 @@ class LiveSource(GstElement):
                 result = self.src_pad.push(buffer)
 
                 if result == GstFlowReturn.OK:
-                    if self.frame_count % 30 == 0:  # Log every second
+                    if self.frame_count % self.fps == 0:  # Log every second
                         print(f"[{self.pipeline.clock.get_time():.3f}s] {self.name}: Generated frame {self.frame_count}, PTS={pts:.3f}s")
                     self.frame_count += 1
                 else:

@@ -11,7 +11,7 @@ def main():
 
     source = LiveSource("camera", fps=30)
     queue = Queue("queue", max_size=10, leaky="upstream")
-    segmenter = HLSSegmenter("segmenter", target_duration=3.0)  # Shorter segments
+    segmenter = HLSSegmenter("segmenter", target_duration=2.0)  # Shorter segments
     sink = S3Sink("s3sink", bucket="test", sync=True)
 
     pipeline.add(source, queue, segmenter, sink)
