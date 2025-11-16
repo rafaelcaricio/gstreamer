@@ -61,7 +61,7 @@ class HLSSegmenter(GstElement):
         self.current_segment.append(buffer)
 
         # Check if segment duration reached
-        segment_duration = buffer.pts - self.segment_start_pts
+        segment_duration = (buffer.pts - self.segment_start_pts) + buffer.duration
 
         if segment_duration >= self.target_duration:
             # Emit complete segment
