@@ -27,10 +27,13 @@ class VideoEnc(GstElement):
 
     def _chain(self, buffer: GstBuffer) -> GstFlowReturn:
         # A fake encoding by counting the number of buffers and set the flags
+        if buffer.has_flag(BufferFlags.EOS):
+            self.log("Received EOS")
+            return GstFlowReturn.EOS
 
         if self.processed_frames % self.gop_size == 0:
             buffer.unset_flag(BufferFlags.DELTA_UNIT)
-            print(f"[{self.pipeline.clock.get_time():.3f}s] {self.name}: Encoded IDR frame #{self.processed_frames}")
+            self.log(f"Encoded IDR frame #{self.processed_frames}")
         else:
             buffer.set_flag(BufferFlags.DELTA_UNIT)
         self.processed_frames += 1

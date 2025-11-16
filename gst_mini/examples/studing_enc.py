@@ -52,7 +52,7 @@ def main():
 
     source = LiveSource("camera", fps=30)
     video_enc = VideoEnc("videoenc", gop_size=60)
-    muxer = Muxer("muxer", target_duration=2.0)
+    muxer = Muxer("muxer")
     sink = FakeSink("fakesink")
 
     pipeline.add(source, video_enc, muxer, sink)
@@ -60,7 +60,7 @@ def main():
     pipeline.link(video_enc, muxer)
     pipeline.link(muxer, sink)
 
-    pipeline.run(duration=2.1)
+    pipeline.run(duration=8)
 
     print("\n" + "="*60)
     print(f"Generated: {source.frame_count} frames")
