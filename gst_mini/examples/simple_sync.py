@@ -46,7 +46,7 @@ def main():
         buffer = GstBuffer(
             pts=pts,
             duration=2.0,
-            data={'segment_num': i, 'buffers': [], 'duration': 2.0}
+            data={'segment_num': i, 'buffers': range(60), 'duration': 2.0}
         )
 
         print(f"[{pipeline.clock.get_time():.3f}s] Pushing buffer {i} with PTS={pts}s")
