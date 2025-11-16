@@ -2,7 +2,7 @@
 
 from .buffer import GstBuffer, BufferFlags
 from .segment import GstSegment
-from .pad import GstPad
+from .pad import GstPad, GstFlowReturn
 from .element import GstElement, GstState
 from .pipeline import GstPipeline
 from .clock import GstClock
@@ -16,4 +16,5 @@ __all__ = [
     'GstState',
     'GstPipeline',
     'GstClock',
+    'GstFlowReturn',
 ]

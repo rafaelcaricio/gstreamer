@@ -9,6 +9,7 @@ from .core import (
     GstState,
     GstPipeline,
     GstClock,
+    GstFlowReturn,
 )
 
 from .elements import (
@@ -16,6 +17,8 @@ from .elements import (
     LiveSource,
     Queue,
     HLSSegmenter,
+    VideoEnc,
+    FakeSink,
 )
 
 __all__ = [
@@ -23,6 +26,7 @@ __all__ = [
     'BufferFlags',
     'GstSegment',
     'GstPad',
+    'GstFlowReturn',
     'GstElement',
     'GstState',
     'GstPipeline',
@@ -31,4 +35,6 @@ __all__ = [
     'LiveSource',
     'Queue',
     'HLSSegmenter',
+    'VideoEnc',
+    'FakeSink',
 ]
